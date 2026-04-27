@@ -9,6 +9,7 @@ builder.Services.Configure<MongoDbSettings>(
 
 builder.Services.AddSingleton<BookService>();
 builder.Services.AddSingleton<AuthorService>();
+builder.Services.AddTransient<SeedService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -32,6 +33,13 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Seed data
+using (var scope = app.Services.CreateScope())
+{
+    var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
+    await seedService.SeedAsync();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
