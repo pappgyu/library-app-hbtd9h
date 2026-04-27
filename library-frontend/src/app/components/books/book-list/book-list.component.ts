@@ -32,7 +32,7 @@ Chart.register(...registerables);
 
     <!-- STAT BLOKKOK -->
     <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-      <mat-card style="flex: 1; min-width: 150px; background: linear-gradient(135deg, #3f51b5, #5c6bc0); color: white; border-radius: 12px;">
+      <mat-card style="flex: 1; min-width: 150px; background: linear-gradient(135deg, #2e7d32, #43a047); color: white; border-radius: 12px;">
         <mat-card-content style="padding: 20px;">
           <div class="stat-number" style="font-size: 32px; font-weight: 700;">{{ books.length }}</div>
           <div style="font-size: 14px; opacity: 0.9; margin-top: 4px;">📚 Összes könyv</div>
@@ -167,10 +167,10 @@ Chart.register(...registerables);
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 12px;">
-          <mat-card *ngFor="let b of pagedBooks" class="fade-in" style="border-left: 4px solid #3f51b5; border-radius: 8px;">
+          <mat-card *ngFor="let b of pagedBooks" class="fade-in" style="border-left: 4px solid #2e7d32; border-radius: 8px;">
             <mat-card-content style="padding: 16px; display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <a [routerLink]="['/books', b.id]" style="font-size: 18px; font-weight: 600; color: #3f51b5;">
+                <a [routerLink]="['/books', b.id]" style="font-size: 18px; font-weight: 600; color: #2e7d32;">
                   {{ b.title }}
                 </a>
                 <div style="margin-top: 4px; color: #666; font-size: 14px;">
@@ -180,7 +180,7 @@ Chart.register(...registerables);
                   {{ b.year }}
                 </div>
                 <div style="margin-top: 4px;">
-                  <span style="background: #e8eaf6; color: #3f51b5; padding: 2px 10px; border-radius: 12px; font-size: 12px;">
+                  <span style="background: #e8f5e9; color: #2e7d32; padding: 2px 10px; border-radius: 12px; font-size: 12px;">
                     {{ b.genre }}
                   </span>
                 </div>
@@ -221,7 +221,7 @@ Chart.register(...registerables);
         </mat-card-header>
         <mat-card-content style="padding: 16px;">
           <p>Biztosan törölni akarod a következő könyvet?</p>
-          <p style="font-weight: 600; margin-top: 8px; color: #3f51b5;">„{{ deleteBookTitle }}"</p>
+          <p style="font-weight: 600; margin-top: 8px; color: #2e7d32;">„{{ deleteBookTitle }}"</p>
         </mat-card-content>
         <mat-card-actions style="padding: 8px 16px 16px; display: flex; gap: 8px; justify-content: flex-end;">
           <button mat-button (click)="showDeleteDialog = false">
@@ -298,7 +298,7 @@ export class BookListComponent implements OnInit, AfterViewInit {
     });
     const labels = Object.keys(genreMap);
     const data = Object.values(genreMap);
-    const colors = ['#3f51b5','#ff4081','#00897b','#f57c00','#9c27b0','#e53935','#0288d1','#558b2f'];
+    const colors = ['#2e7d32','#ff4081','#00897b','#f57c00','#9c27b0','#e53935','#0288d1','#558b2f'];
     if (this.pieChartInstance) this.pieChartInstance.destroy();
     this.pieChartInstance = new Chart(this.pieChartRef.nativeElement, {
       type: 'pie',
@@ -318,7 +318,7 @@ export class BookListComponent implements OnInit, AfterViewInit {
     if (this.barChartInstance) this.barChartInstance.destroy();
     this.barChartInstance = new Chart(this.barChartRef.nativeElement, {
       type: 'bar',
-      data: { labels, datasets: [{ label: 'Könyvek száma', data, backgroundColor: '#3f51b5', borderRadius: 6 }] },
+      data: { labels, datasets: [{ label: 'Könyvek száma', data, backgroundColor: '#2e7d32', borderRadius: 6 }] },
       options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
     });
   }
