@@ -3,12 +3,14 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CommonModule } from '@angular/common';
+import { ThemeService } from '../../../services/theme.service'
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, MatListModule, MatIconModule, MatTooltipModule, CommonModule],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, MatListModule, MatIconModule, MatTooltipModule, MatSlideToggleModule, CommonModule],
   styles: [`
     .sidebar {
       background: linear-gradient(180deg, #1a237e 0%, #283593 60%, #3949ab 100%);
@@ -78,7 +80,7 @@ import { CommonModule } from '@angular/common';
     }
 
     .collapse-btn {
-      margin: auto 8px 16px;
+      margin: auto 8px 0;
       padding: 10px 16px;
       border-radius: 10px;
       color: rgba(255,255,255,0.6);
@@ -96,10 +98,38 @@ import { CommonModule } from '@angular/common';
       color: white;
     }
 
+    .theme-toggle {
+      margin: 8px 8px 16px;
+      padding: 14px 16px 10px;
+      border-radius: 10px;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
+    }
+
+    .theme-toggle mat-icon {
+      min-width: 20px;
+      font-size: 20px;
+    }
+
+    .theme-toggle span {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+
     .content {
       flex: 1;
       overflow-y: auto;
-      background: #f5f7fb;
+      background: inherit;
+      transition: background-color 0.3s ease;
+    }
+
+    .content.dark-mode {
+      background: #1a1a2e !important;
     }
   `],
   template: `
@@ -142,9 +172,25 @@ import { CommonModule } from '@angular/common';
           <span *ngIf="!collapsed" style="font-size: 13px;">Összecsukás</span>
         </div>
 
+        <!-- Dark mode toggle -->
+        <div class="theme-toggle"
+             [matTooltip]="collapsed ? (themeService.isDarkMode() ? 'Light mód' : 'Dark mód') : ''"
+             matTooltipPosition="right"
+             (click)="collapsed ? themeService.toggleTheme() : null">
+          <mat-icon>{{ themeService.isDarkMode() ? 'dark_mode' : 'light_mode' }}</mat-icon>
+          <ng-container *ngIf="!collapsed">
+            <span>Dark mód</span>
+            <mat-slide-toggle
+              [checked]="themeService.isDarkMode()"
+              (change)="themeService.toggleTheme()"
+              color="accent">
+            </mat-slide-toggle>
+          </ng-container>
+        </div>
+
       </div>
 
-      <div class="content">
+      <div class="content" [class.dark-mode]="themeService.isDarkMode()">
         <router-outlet></router-outlet>
       </div>
 
@@ -154,6 +200,8 @@ import { CommonModule } from '@angular/common';
 export class NavbarComponent implements OnInit {
   collapsed = false;
 
+  constructor(public themeService: ThemeService) {}
+
   @HostListener('window:resize')
   onResize() {
     this.collapsed = window.innerWidth < 768;
@@ -161,5 +209,6 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
     this.collapsed = window.innerWidth < 768;
+    this.themeService.loadSavedTheme();
   }
 }
