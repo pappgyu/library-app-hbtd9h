@@ -1,120 +1,197 @@
-📚 Online Könyvtár – Library App
-Teljes stack webalkalmazás könyvek és szerzők kezelésére.
-🏗️ Technológiák
-RétegTechnológiaFrontendAngular 21 + Angular MaterialBackendASP.NET 10 Web APIAdatbázisMongoDBKonténerizálásDocker + Docker ComposeOrchestrációKubernetes (Minikube)CI PipelineGitHub ActionsCD PipelineArgoCD (GitOps)
+# 📚 Online Könyvtár – Library App
 
-🚀 Gyors indítás (Docker Compose)
-Előfeltételek
+Teljes stack webalkalmazás könyvek és szerzők kezelésére modern DevOps környezettel.
 
-Docker Desktop telepítve és futó állapotban
+---
 
-Lépések
-bash# 1. Klónozd a repo-t
+## 🏗️ Technológiai stack
+
+| Réteg          | Technológia                   |
+| -------------- | ----------------------------- |
+| Frontend       | Angular 21 + Angular Material |
+| Backend        | ASP.NET 10 Web API            |
+| Adatbázis      | MongoDB                       |
+| Konténerizálás | Docker + Docker Compose       |
+| Orchestration  | Kubernetes (Minikube)         |
+| CI             | GitHub Actions                |
+| CD             | ArgoCD (GitOps)               |
+
+---
+
+## 🚀 Gyors indítás (Docker Compose)
+
+### Előfeltételek
+
+* Docker Desktop telepítve és fut
+* Git telepítve
+
+### Indítás
+
+```bash
+# Repo klónozása
 git clone https://github.com/Werbygbr/library-app.git
 cd library-app
 
-# 2. Indítsd el az alkalmazást
+# Alkalmazás indítása
 docker-compose up --build
-Megnyitás böngészőben
+```
 
-Alkalmazás: http://localhost:4200
-API Swagger: http://localhost:8080/swagger
+### Elérés
 
-Leállítás
-bashdocker-compose down
+* Frontend: http://localhost:4200
+* Swagger API: http://localhost:8080/swagger
 
-☸️ Kubernetes indítás (Minikube)
-Előfeltételek
+### Leállítás
 
-Docker Desktop
-Minikube
-kubectl
+```bash
+docker-compose down
+```
 
-Lépések
-bash# 1. Klónozd a repo-t
+---
+
+## ☸️ Kubernetes futtatás (Minikube)
+
+### Előfeltételek
+
+* Docker Desktop
+* Minikube
+* kubectl
+
+### Lépések
+
+```bash
+# Repo klónozása
 git clone https://github.com/Werbygbr/library-app.git
 cd library-app
 
-# 2. Indítsd el a Minikube clustert
+# Minikube indítása
 minikube start
 
-# 3. Deployold az alkalmazást
+# Deploy
 kubectl apply -f k8s/
 
-# 4. Várj amíg minden pod elindul (1-2 perc)
+# Podok figyelése
 kubectl get pods -w
+```
 
-# 5. Nyisd meg a böngészőben
+### Megnyitás
+
+```bash
 minikube service frontend
+```
 
-⚠️ A terminált nyitva kell tartani amíg használod az alkalmazást!
+⚠️ Fontos: a terminált nyitva kell tartani a futás alatt.
 
-Pod állapot ellenőrzése
-bashkubectl get pods
+### Ellenőrzés
+
+```bash
+kubectl get pods
 kubectl get services
-Minden pod Running állapotban kell legyen.
+```
 
-🔄 CI/CD Pipeline
-GitHub Actions (CI)
-Minden main branch-re történő push automatikusan:
+---
 
-Buildeli a backend Docker image-et
-Buildeli a frontend Docker image-et
-Feltölti őket a GitHub Container Registry-be (ghcr.io)
+## 🔄 CI/CD Pipeline
 
-ArgoCD (CD)
-Az ArgoCD folyamatosan figyeli a GitHub repo-t és automatikusan szinkronizálja a Kubernetes clustert.
-ArgoCD UI elérése
-bash# Port forward
+### ⚙️ GitHub Actions (CI)
+
+Minden `main` branch push esetén:
+
+* Backend Docker image build
+* Frontend Docker image build
+* Push GitHub Container Registry-be (ghcr.io)
+
+---
+
+### 🚀 ArgoCD (CD)
+
+* Automatikus deploy Kubernetes clusterbe (GitOps)
+* Repo folyamatos figyelése
+
+### ArgoCD UI elérés
+
+```bash
 kubectl port-forward svc/argocd-server -n argocd 8091:443
-Majd nyisd meg: https://localhost:8091
+```
 
-User: admin
-Password:
+👉 https://localhost:8091
 
-bash$encoded = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}"
+**Belépés:**
+
+* User: `admin`
+* Password lekérése:
+
+```bash
+$encoded = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}"
 [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($encoded))
+```
 
-📁 Projekt struktúra
+---
+
+## 📁 Projekt struktúra
+
+```
 library-app/
-├── LibraryApi/                 # ASP.NET 10 Backend
-│   ├── Controllers/            # REST API végpontok
-│   ├── Models/                 # Book, Author modellek
-│   ├── Services/               # CRUD üzleti logika
-│   ├── Settings/               # MongoDB beállítások
-│   ├── Dockerfile
-│   └── appsettings.json
-├── library-frontend/           # Angular 21 Frontend
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── components/     # Book, Author, Navbar komponensek
-│   │   │   ├── models/         # TypeScript interfészek
-│   │   │   └── services/       # HTTP service-ek
-│   │   └── environments/       # Dev/prod környezeti változók
-│   ├── Dockerfile
-│   └── nginx.conf
-├── k8s/                        # Kubernetes manifestek
+├── LibraryApi/              # ASP.NET Backend
+│   ├── Controllers/         # API végpontok
+│   ├── Models/              # Book, Author modellek
+│   ├── Services/            # Business logic
+│   ├── Settings/            # MongoDB config
+│   └── Dockerfile
+│
+├── library-frontend/        # Angular Frontend
+│   ├── src/app/
+│   │   ├── components/      # UI komponensek
+│   │   ├── models/          # TypeScript interfészek
+│   │   └── services/        # HTTP hívások
+│   └── Dockerfile
+│
+├── k8s/                     # Kubernetes manifestek
 │   ├── mongodb-deployment.yaml
 │   ├── backend-deployment.yaml
 │   ├── frontend-deployment.yaml
 │   └── argocd-application.yaml
-├── .github/
-│   └── workflows/
-│       └── ci.yml              # GitHub Actions CI pipeline
+│
+├── .github/workflows/
+│   └── ci.yml               # CI pipeline
+│
 └── docker-compose.yml
+```
 
-🌐 API végpontok
-Könyvek
-MethodEndpointLeírásGET/api/booksÖsszes könyv listázásaGET/api/books/{id}Egy könyv lekérésePOST/api/booksÚj könyv létrehozásaPUT/api/books/{id}Könyv módosításaDELETE/api/books/{id}Könyv törlése
-Szerzők
-MethodEndpointLeírásGET/api/authorsÖsszes szerző listázásaGET/api/authors/{id}Egy szerző lekérésePOST/api/authorsÚj szerző létrehozásaPUT/api/authors/{id}Szerző módosításaDELETE/api/authors/{id}Szerző törlése
+---
 
-💡 Funkciók
+## 🌐 API végpontok
 
-📚 Könyvek CRUD kezelése
-✍️ Szerzők CRUD kezelése
-📊 Dashboard statisztikák (összes könyv, szerzők, legújabb év, műfajok)
-🔍 Könyv részletes nézet
-📄 Lapozás (pagination)
-📱 Responsive design
-🎨 Modern Material Design UI
+### 📚 Könyvek
+
+| Method | Endpoint        | Leírás       |
+| ------ | --------------- | ------------ |
+| GET    | /api/books      | Összes könyv |
+| GET    | /api/books/{id} | Egy könyv    |
+| POST   | /api/books      | Létrehozás   |
+| PUT    | /api/books/{id} | Módosítás    |
+| DELETE | /api/books/{id} | Törlés       |
+
+---
+
+### ✍️ Szerzők
+
+| Method | Endpoint          | Leírás        |
+| ------ | ----------------- | ------------- |
+| GET    | /api/authors      | Összes szerző |
+| GET    | /api/authors/{id} | Egy szerző    |
+| POST   | /api/authors      | Létrehozás    |
+| PUT    | /api/authors/{id} | Módosítás     |
+| DELETE | /api/authors/{id} | Törlés        |
+
+---
+
+## 💡 Funkciók
+
+* 📚 Könyvek CRUD
+* ✍️ Szerzők CRUD
+* 📊 Dashboard statisztikák
+* 🔍 Részletes könyv nézet
+* 📄 Lapozás (pagination)
+* 📱 Reszponzív UI
+* 🎨 Angular Material design
